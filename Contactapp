@@ -1,0 +1,433 @@
+#include<iostream.h>
+#include<conio.h>
+#include<fstream.h>
+#include<string.h>
+#include<stdio.h>
+#include<process.h>
+class CONTACTS
+{
+  public:
+	char numb1[11], numb2[11];
+	char name[25];
+	char contype;
+	void getdata();
+	void putdata();
+}obj;
+
+void CONTACTS :: getdata()
+	{
+	  cout<<"\n\tEnter Contact Type [normal-N or favourite-F] : ";
+	  cin>>contype;
+	  if ((contype=='F')||(contype=='N'))
+	  {
+	    cout<<"\tEnter Contact Name(no spaces in between):"<<endl;
+	    cout<<"\t\t";
+	    cin>>name;
+	    cout<<"\tEnter Contact Number(maximum 10 digits):"<<endl;
+	    cout<<"\t\t";
+	    cin>>numb1;
+	    cout<<"\t";
+	    char ch;
+	    cout<<"Do you want to enter an alternate number ? (YES-Y OR NO-N) :"<<endl;
+	    cout<<"\t\t";
+	    cin>>ch;
+	    if (ch=='Y'||ch=='y')
+	    {
+	     cout<<"\tEnter The Second Number(maximum 10 digits):"<<endl;
+	     cout<<"\t\t";
+	     cin>>numb2;
+	    }
+	    else
+	    {
+	     numb2[0]='N';
+	     numb2[1]='I';
+	     numb2[2]='L';
+	     numb2[3]=' ';
+	     numb2[4]=' ';
+	     numb2[5]=' ';
+	     numb2[6]=' ';
+	     numb2[7]=' ';
+	     numb2[8]=' ';
+	     numb2[9]=' ';
+	    }
+	  }
+	  else
+	  {
+	   cout<<"\t\t\t      INVALID CONTACT TYPE!"<<endl;
+	  }
+	}
+
+void CONTACTS::putdata()
+	{
+	  cout<<"\n\n\t\t\t     Name        : "<<name<<"\n\t\t\t     Contact type: "<<contype<<"\n\t\t\t     Number1     : "<<numb1<<"\n\t\t\t     Number2     : "<<numb2;
+	}
+
+void main()
+   {
+     clrscr();
+     cout<<"\n\n\t\t\t CONTACT DATABASE PROJECT DONE BY:\n\n\t Achyuth Anand---Magesh Rengarajan---L.N Narein---Shri Hari V.";
+     cout<<"\n\n\t\t\t  SCHOOL: Sri Vageesha Vidhyashram";
+     char key;
+     cout<<"\n\n\t\t\t     Press Any Key To Continue\n\n\t\t\t\t\t";
+     cin>>key;
+     clrscr();
+     char start='Y';
+     cout<<"\n\t\t\t Welcome To The Contact Database\n\t\t\t -------------------------------\n";
+     while(start=='Y'||start=='y')
+     {
+      cout<<"\t\t\t\tEnter your choice\n";
+      cout<<"\n\t      1-INSERT   2-DISPLAY   3-SEARCH   4-MODIFY   5-DELETE"<<endl;
+      int X;
+      cout<<"\n\t\t\t\t        ";
+      cin>>X;
+      switch(X)
+      {
+	case 1:
+	   clrscr();
+	    cout<<"\n\t\t\t\t    INSERTION\n\t\t\t\t    ---------\n";
+	   ofstream fout;
+	   fout.open("CONTACTS.txt",ios::binary|ios::app);
+	   char a='Y';
+	   while(a=='Y'||a=='y')
+	   {
+	     obj.getdata();
+	     fout.write((char*)&obj, sizeof(obj));
+	     cout<<" \n\n\t        DO YOU WANT TO ENTER MORE RECORDS ? (YES-Y OR NO-N) "<<endl;
+	     cout<<"\n\t\t\t\t        ";
+	     cin>>a;
+	     if(a=='Y'||a=='y')
+	     {
+	       clrscr();
+	     }
+	   }
+	   fout.close();
+	break;
+
+	case 2:
+	   clrscr();
+	   ifstream fin;
+	   cout<<"\n\t\t\t\t     DISPLAY\n\t\t\t\t     -------\n";
+	   fin.open("CONTACTS.txt",ios::binary);
+	   while(fin.read((char*)&obj,sizeof(obj)))
+	   {
+	    obj.putdata();
+	   }
+	   fin.close();
+	break;
+
+	case 3:
+	   int y=0;
+	   clrscr();
+	   ifstream fsearch;
+	   fsearch.open("CONTACTS.txt",ios::binary);
+	   cout<<"\n\t\t\t\t    SEARCHING\n\t\t\t\t    ---------\n";
+	   cout<<"\t\t\t      SEARCH ON THE BASIS OF:\n";
+	   cout<<"\n\t\t    A-NAME  B-CONTACT TYPE  C-BOTH NAME AND TYPE"<<endl;
+	   cout<<"\n\t\t\t\t        ";
+	   char q;
+	   cin>>q;
+	   cout<<"\n";
+	   switch(q)
+	     {
+
+	       case 'A':
+		  cout<<"\tENTER [FULL] NAME YOU WANT TO SEARCH FOR :"<<endl;
+		  char n[25];
+		  cout<<"\t";
+		  cin>>n;
+		  while(fsearch.read((char*)&obj, sizeof(obj)))
+		   {
+		    if(strcmp(obj.name,n)==0)
+		     {
+		      obj.putdata();
+		      y++;
+		     }
+		   }
+		  fsearch.close();
+	       break;
+
+	       case 'B':
+		  cout<<"\tENTER CONTACT TYPE YOU WANT TO SEARCH FOR :"<<endl;
+		  char t;
+		  cout<<"\t";
+		  cin>>t;
+		  while( fsearch.read((char*)&obj, sizeof(obj)))
+		    {
+		      if(obj.contype==t)
+		     {
+		      obj.putdata();
+		      y++;
+		     }
+		    }
+		  fsearch.close();
+	       break;
+
+	       case 'C':
+		  cout<<"\tENTER TYPE :";
+		  char b;
+		  cin>>b;
+		  cout<<"\n\tENTER NAME :";
+		  char c[25];
+		  cin>>c;
+		  while(fsearch.read((char*)&obj, sizeof(obj)))
+		     {
+		       if(obj.contype==b)
+		       {
+			if(strcmp(obj.name,c)==0)
+			{
+			  obj.putdata();
+			  y++;
+			}
+		       }
+		     }
+		  fsearch.close();
+	       break;
+
+	       default:
+		  cout<<"\t\t\t\t  INVALID CHOICE"<<endl;
+		  y++;
+	     }
+	   if(y==0)
+	   {
+	    cout<<"\t\t\t\tCONTACT NOT FOUND!";
+	   }
+	break;
+
+	case 4:
+	   clrscr();
+	   fstream fmd;
+	   fmd.open("CONTACTS.txt",ios::in|ios::out|ios::binary);
+	   cout<<"\n\t\t\t\t    MODIFYING\n\t\t\t\t    ---------\n\n";
+	   cout<<"\n\t\t\t      MODIFY ON THE BASIS OF:\n";
+	   cout<<"\t\t\t   A-NAME B-BOTH NAME AND TYPE \n";
+	   cout<<"\t    (B-for records with same name but different contact type)\n "<<endl;
+	   char w;
+	   cout<<"\t\t\t\t\t";
+	   cin>>w;
+	   switch(w)
+	     {
+	      case 'A':
+		  int w=0;
+		  clrscr();
+		  cout<<"\n\t     ENTER THE [FULL] NAME OF THE RECORD YOU WANT TO MODIFY:\n"<<endl;
+		  char j[25];
+		  cout<<"\t\t\t\t\t";
+		  cin>>j;
+		  cout<<endl;
+		  while(fmd.read((char*)&obj, sizeof(obj)))
+		    {
+		      long pos = fmd.tellg();
+		      if(strcmp(obj.name,j)==0)
+		       {
+			 fmd.seekg(pos - sizeof(obj));
+			 obj.getdata();
+			 fmd.write((char*)&obj, sizeof(obj));
+			 w++;
+		       }
+		    }
+		   clrscr();
+		   if(w==0)
+		   {
+		    cout<<"\t\t\t\tCONTACT NOT FOUND!";
+		   }
+		  ifstream fmd1;
+		  cout<<"\n\t\t\t         THE LIST IS NOW:"<<endl;
+		  fmd1.open("CONTACTS.txt",ios::binary);
+		  while(fmd1.read((char*)&obj,sizeof(obj)))
+		  {
+		   obj.putdata();
+		  }
+		  fmd1.close();
+		  fmd.close();
+
+	      break;
+
+	      case 'B':
+		  int abc=0;
+		  clrscr();
+		  cout<<"\n\n\t\t\t\tENTER TYPE AND THEN NAME\n\n ";
+		  char g[25];
+		  char f;
+		  cout<<"\tENTER TYPE :";
+		  cin>>f;
+		  cout<<"\n\tENTER NAME :";
+		  cin>>g;
+		  while(fmd.read((char*)&obj, sizeof(obj)))
+		   {
+		      long pos = fmd.tellg();
+		      if(obj.contype==f)
+		       {
+			 if(strcmp(obj.name,g)==0)
+			  {
+			    fmd.seekg(pos - sizeof(obj));
+			    obj.getdata();
+			    fmd.write((char*)&obj, sizeof(obj));
+			    abc++;
+			  }
+		       }
+		   }
+		   clrscr();
+		   if(abc==0)
+		   {
+		    cout<<"\t\t\t\tCONTACT NOT FOUND!";
+		   }
+		   ifstream fmd2;
+		   cout<<"\n\t\t\t         THE LIST IS NOW:"<<endl;
+		   fmd2.open("CONTACTS.txt",ios::binary);
+		   while(fmd2.read((char*)&obj,sizeof(obj)))
+		   {
+		    obj.putdata();
+		   }
+		   fmd2.close();
+		   fmd.close();
+
+	       break;
+
+	       default :
+		  cout<<"\t\t\t\t  INVALID CHOICE"<<endl;
+	     }
+
+	break;
+
+	case 5:
+	   clrscr();
+	   ifstream finn;
+	   ofstream foutt;
+	   finn.open("CONTACTS.txt",ios::binary);
+	   foutt.open("TMP.txt",ios::binary|ios::app);
+	   cout<<"\n\t\t\t\t     DELETION\n\t\t\t\t     --------\n\n";
+	   cout<<"\t\t\t     DELETE ON THE BASIS OF:\n\n";
+	   cout<<"\t\t\t   A-NAME B-BOTH NAME AND TYPE \n\n\t\t\t\tC-DESTROY DATABSE\n";
+	   cout<<"\n\t      (B-for records with same name but different contact type)\n "<<endl;
+	   char p;
+	   cout<<"\t\t\t\t\t";
+	   cin>>p;
+	   switch(p)
+	     {
+	       case 'A':
+		  int o=0;
+		  cout<<"\n\n\t\t\tENTER [FULL] NAME YOU WANT TO DELETE :\n";
+		  char h[25];
+		  cout<<"\t\t\t\t      ";
+		  cin>>h;
+		  while(finn.read((char*)&obj, sizeof(obj)))
+		    {
+		      if(strcmp(obj.name,h)!=0)
+		      {
+		       foutt.write((char*)&obj, sizeof(obj));
+		      }
+		      else
+		      {
+		       o++;
+		      }
+		    }
+		  finn.close();
+		  foutt.close();
+		  remove("CONTACTS.txt");
+		  rename("TMP.txt","CONTACTS.txt");
+		  clrscr();
+		  if(o!=0)
+		  cout<<"\t\t\t      The record is deleted"<<endl;
+		  else
+		  cout<<"\t\t\t   Entered record does not exist !"<<endl;
+		  cout<<"\t\t\t         THE LIST IS NOW:"<<endl;
+
+		  ifstream fin1;
+		  fin1.open("CONTACTS.txt",ios::binary);
+		  while(fin1.read((char*)&obj,sizeof(obj)))
+		  {
+		   obj.putdata();
+		  }
+		  fin1.close();
+	       break;
+
+	       case 'B':
+		  int g=0;
+		  clrscr();
+		  cout<<"\n\n\t\t\t\tENTER TYPE AND THEN NAME\n\n ";
+		  char l;
+		  char d[25];
+		  cout<<"\tENTER TYPE :";
+		  cin>>l;
+		  cout<<"\n\tENTER NAME :";
+		  cin>>d;
+		  while(finn.read((char*)&obj, sizeof(obj)))
+		    {
+		     if(strcmp(obj.name,d)!=0)
+		      {
+			foutt.write((char*)&obj, sizeof(obj));
+		      }
+		     else
+		      {
+		       if(obj.contype==l)
+			{
+			 g++;
+			}
+		       else
+			{
+			 foutt.write((char*)&obj, sizeof(obj));
+			}
+		      }
+		    }
+		   finn.close();
+		   foutt.close();
+		   remove("CONTACTS.txt");
+		   rename("TMP.txt","CONTACTS.txt");
+		   clrscr();
+		   if(g!=0)
+		   cout<<"\t\t\t      The record is deleted"<<endl;
+		   else
+		   cout<<"\t\t\t   Entered record does not exist !"<<endl;
+		   cout<<"\t\t\t         THE LIST IS NOW:"<<endl;
+
+		   ifstream fin2;
+		   fin2.open("CONTACTS.txt",ios::binary);
+		   while(fin2.read((char*)&obj,sizeof(obj)))
+		   {
+		    obj.putdata();
+		   }
+		   fin2.close();
+	       break;
+
+	       case 'C':
+		   clrscr();
+		   char confirm;
+		   cout<<"\n\n\t  Are you really sure you want to destry the database ? (Y/N)\n\t\t\t\t        ";
+		   cin>>confirm;
+		   if(confirm=='Y')
+		    {
+		     remove("CONTACTS.txt");
+		     cout<<"\n\t\t\t          THE EMPTY LIST:"<<endl;
+		     ifstream fin3;
+		     fin3.open("CONTACTS.txt",ios::binary);
+		     while(fin3.read((char*)&obj,sizeof(obj)))
+		     {
+		      obj.putdata();
+		     }
+		     fin3.close();
+		    }
+		   else
+		    {
+		     cout<<"\n\t\t\t       OK....QUERY REJECTED";
+		    }
+	       break;
+
+	       default:
+		  cout<<"\t\t\t\t  INVALID CHOICE"<<endl;
+	     }
+	 break;
+
+	default:
+	 cout<<"\t\t\t\t  INVALID CHOICE"<<endl;
+      }
+       cout<<"\n\n\t DO YOU WANT TO PERFORM FURTHER OPERATIONS ON THE LIST ? (Y or N)\n";
+       cout<<"\n\t\t\t\t        ";
+       cin>>start;
+       cout<<"\n";
+       clrscr();
+     }
+     cout<<"\n\n\t\t\t    !!THANK YOU AND GOODBYE!!";
+   getch();
+  }
+
+
